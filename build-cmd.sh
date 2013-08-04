@@ -78,7 +78,7 @@ pushd "$FREETYPELIB_SOURCE_DIR"
             mv "$stage/release" "$stage/lib"
         ;;
         "linux")
-            LDFLAGS="-m32" CFLAGS="-m32" CXXFLAGS="-m32" ./configure --prefix="$stage"
+            LDFLAGS="${AUTOBUILD_GCC_ARCH_FLAG}" CFLAGS="${AUTOBUILD_GCC_ARCH_FLAG}" CXXFLAGS="${AUTOBUILD_GCC_ARCH_FLAG}" ./configure --prefix="$stage"
             make
             make install
             mv "$stage/include/freetype2/freetype" "$stage/include/freetype"
