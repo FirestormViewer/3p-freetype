@@ -42,8 +42,14 @@ pushd "$FREETYPELIB_SOURCE_DIR"
         "windows")
             load_vsvars
 
-            build_sln "builds/win32/vc2013/freetype.sln" "LIB Debug|Win32"
-            build_sln "builds/win32/vc2013/freetype.sln" "LIB Release|Win32"
+			if [ "${ND_AUTOBUILD_ARCH}" == "x64" ]
+			then
+				build_sln "builds/win32/vc2013/freetype.sln" "LIB Debug|x64"
+				build_sln "builds/win32/vc2013/freetype.sln" "LIB Release|x64"
+			else
+				build_sln "builds/win32/vc2013/freetype.sln" "LIB Debug|Win32"
+				build_sln "builds/win32/vc2013/freetype.sln" "LIB Release|Win32"
+			fi
 
             mkdir -p "$stage/lib/debug"
             mkdir -p "$stage/lib/release"
