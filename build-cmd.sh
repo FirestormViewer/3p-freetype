@@ -27,14 +27,17 @@ stage="$(pwd)/stage"
 
 [ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
 
-# extract APR version into VERSION.txt
+# extract Freetype version into VERSION.txt
 FREETYPE_INCLUDE_DIR="${top}/${FREETYPELIB_SOURCE_DIR}/include/freetype"
+FREETYPE_INCLUDE_DIR="$(cygpath -m $FREETYPE_INCLUDE_DIR)"
 major_version=$(perl -ne 's/#\s*define\s+FREETYPE_MAJOR\s+([\d]+)/$1/ && print' "${FREETYPE_INCLUDE_DIR}/freetype.h")
 minor_version=$(perl -ne 's/#\s*define\s+FREETYPE_MINOR\s+([\d]+)/$1/ && print' "${FREETYPE_INCLUDE_DIR}/freetype.h")
 patch_version=$(perl -ne 's/#\s*define\s+FREETYPE_PATCH\s+([\d]+)/$1/ && print' "${FREETYPE_INCLUDE_DIR}/freetype.h")
 version="${major_version}.${minor_version}.${patch_version}"
 build=${AUTOBUILD_BUILD_ID:=0}
-echo "${version}.${build}" > "${stage}/VERSION.txt"
+echo "${version}.${build}" > "${stage}/VERSION.tmp"
+tr -d "\r\n" < "${stage}/VERSION.tmp" > "${stage}/VERSION.txt"
+rm "${stage}/VERSION.tmp"
 
 pushd "$FREETYPELIB_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
