@@ -29,7 +29,9 @@ stage="$(pwd)/stage"
 
 # extract Freetype version into VERSION.txt
 FREETYPE_INCLUDE_DIR="${top}/${FREETYPELIB_SOURCE_DIR}/include/freetype"
-FREETYPE_INCLUDE_DIR="$(cygpath -m $FREETYPE_INCLUDE_DIR)"
+if [ "$OSTYPE" = "cygwin" ] ; then
+  FREETYPE_INCLUDE_DIR="$(cygpath -m $FREETYPE_INCLUDE_DIR)"
+fi
 major_version=$(perl -ne 's/#\s*define\s+FREETYPE_MAJOR\s+([\d]+)/$1/ && print' "${FREETYPE_INCLUDE_DIR}/freetype.h")
 minor_version=$(perl -ne 's/#\s*define\s+FREETYPE_MINOR\s+([\d]+)/$1/ && print' "${FREETYPE_INCLUDE_DIR}/freetype.h")
 patch_version=$(perl -ne 's/#\s*define\s+FREETYPE_PATCH\s+([\d]+)/$1/ && print' "${FREETYPE_INCLUDE_DIR}/freetype.h")
