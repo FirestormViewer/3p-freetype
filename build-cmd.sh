@@ -84,15 +84,16 @@ pushd "$FREETYPELIB_SOURCE_DIR"
             # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
             sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
 
-            opts="${TARGET_OPTS:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.7}"
+            opts32="${TARGET_OPTS:--arch i386 -iwithsysroot $sdk -mmacosx-version-min=10.7}"
+            opts64="${TARGET_OPTS:--arch x86_64 -iwithsysroot $sdk -mmacosx-version-min=10.7}"
 
             # Debug first
-            CFLAGS="$opts -gdwarf-2 -O0" \
-                CXXFLAGS="$opts -gdwarf-2 -O0" \
+            CFLAGS="$opts32 -gdwarf-2 -O0" \
+                CXXFLAGS="$opts32 -gdwarf-2 -O0" \
                 CPPFLAGS="-I$stage/packages/include/zlib" \
-                LDFLAGS="$opts -Wl,-headerpad_max_install_names -L$stage/packages/lib/debug -Wl,-unexported_symbols_list,$stage/packages/lib/debug/libz_darwin.exp" \
+                LDFLAGS="$opts32 -Wl,-headerpad_max_install_names -L$stage/packages/lib/debug -Wl,-unexported_symbols_list,$stage/packages/lib/debug/libz_darwin.exp" \
                 ./configure --with-pic \
-                --prefix="$stage" --libdir="$stage"/lib/debug/
+                --prefix="${stage}32" --libdir="${stage}32"/lib/debug/
             make
             make install
 
@@ -102,17 +103,37 @@ pushd "$FREETYPELIB_SOURCE_DIR"
                 echo "No tests"
             fi
 
-            install_name_tool -id "@executable_path/../Resources/libfreetype.6.dylib" "$stage"/lib/debug/libfreetype.6.dylib
+            install_name_tool -id "@executable_path/../Resources/libfreetype.6.dylib" "${stage}32"/lib/debug/libfreetype.6.dylib
+
+            make distclean
+
+            # Debug first
+            CFLAGS="$opts64 -gdwarf-2 -O0" \
+                CXXFLAGS="$opts64 -gdwarf-2 -O0" \
+                CPPFLAGS="-I$stage/packages/include/zlib" \
+                LDFLAGS="$opts64 -Wl,-headerpad_max_install_names -L$stage/packages/lib/debug -Wl,-unexported_symbols_list,$stage/packages/lib/debug/libz_darwin.exp" \
+                ./configure --with-pic \
+                --prefix="${stage}64" --libdir="${stage}64"/lib/debug/
+            make
+            make install
+
+            # conditionally run unit tests
+            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
+                # make test
+                echo "No tests"
+            fi
+
+            install_name_tool -id "@executable_path/../Resources/libfreetype.6.dylib" "${stage}64"/lib/debug/libfreetype.6.dylib
 
             make distclean
 
             # Release last
-            CFLAGS="$opts -gdwarf-2 -O2" \
-                CXXFLAGS="$opts -gdwarf-2 -O2" \
+            CFLAGS="$opts32 -gdwarf-2 -O2" \
+                CXXFLAGS="$opts32 -gdwarf-2 -O2" \
                 CPPFLAGS="-I$stage/packages/include/zlib" \
-                LDFLAGS="$opts -Wl,-headerpad_max_install_names -L$stage/packages/lib/release -Wl,-unexported_symbols_list,$stage/packages/lib/release/libz_darwin.exp" \
+                LDFLAGS="$opts32 -Wl,-headerpad_max_install_names -L$stage/packages/lib/release -Wl,-unexported_symbols_list,$stage/packages/lib/release/libz_darwin.exp" \
                 ./configure --with-pic \
-                --prefix="$stage" --libdir="$stage"/lib/release/
+                --prefix="${stage}32" --libdir="${stage}32"/lib/release/
             make
             make install
 
@@ -122,9 +143,36 @@ pushd "$FREETYPELIB_SOURCE_DIR"
                 echo "No tests"
             fi
 
-            install_name_tool -id "@executable_path/../Resources/libfreetype.6.dylib" "$stage"/lib/release/libfreetype.6.dylib
+            install_name_tool -id "@executable_path/../Resources/libfreetype.6.dylib" "${stage}32"/lib/release/libfreetype.6.dylib
 
             make distclean
+
+            # Release last
+            CFLAGS="$opts64 -gdwarf-2 -O2" \
+                CXXFLAGS="$opts64 -gdwarf-2 -O2" \
+                CPPFLAGS="-I$stage/packages/include/zlib" \
+                LDFLAGS="$opts64 -Wl,-headerpad_max_install_names -L$stage/packages/lib/release -Wl,-unexported_symbols_list,$stage/packages/lib/release/libz_darwin.exp" \
+                ./configure --with-pic \
+                --prefix="${stage}64" --libdir="${stage}64"/lib/release/
+            make
+            make install
+
+            # conditionally run unit tests
+            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
+                # make test
+                echo "No tests"
+            fi
+
+            install_name_tool -id "@executable_path/../Resources/libfreetype.6.dylib" "${stage}64"/lib/release/libfreetype.6.dylib
+
+            make distclean
+
+	    rm -rf $stage/{bin,include,lib,share}
+	    cp -aR ${stage}32/* $stage
+	    pushd $stage/lib
+	      find . -type f -name \*.dylib -print | xargs -I % lipo ${stage}32/lib/% ${stage}64/lib/% -create -output %
+	      find . -type f -name \*.a -print | xargs -I % lipo ${stage}32/lib/% ${stage}64/lib/% -create -output %
+	    popd
         ;;
 
         "linux")
