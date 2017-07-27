@@ -81,7 +81,6 @@ pushd "$FREETYPELIB_SOURCE_DIR"
             # repo                  root                run_tests               suffix
 
             opts="${TARGET_OPTS:--arch $AUTOBUILD_CONFIGURE_ARCH $LL_BUILD_RELEASE}"
-            opts64="${TARGET_OPTS:--arch x86_64 -iwithsysroot $sdk -mmacosx-version-min=10.7}"
 
             # Release
             CFLAGS="$opts" \
