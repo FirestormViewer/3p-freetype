@@ -31,19 +31,14 @@ source_environment_tempfile="$stage/source_environment.sh"
 
 [ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
 
-# extract Freetype version into VERSION.txt
+# extract APR version into VERSION.txt
 FREETYPE_INCLUDE_DIR="${top}/${FREETYPELIB_SOURCE_DIR}/include/freetype"
-if [ "$OSTYPE" = "cygwin" ] ; then
-  FREETYPE_INCLUDE_DIR="$(cygpath -m $FREETYPE_INCLUDE_DIR)"
-fi
 major_version="$(sed -n -E 's/#[[:space:]]*define[[:space:]]+FREETYPE_MAJOR[[:space:]]+([0-9]+)/\1/p' "${FREETYPE_INCLUDE_DIR}/freetype.h")"
 minor_version="$(sed -n -E 's/#[[:space:]]*define[[:space:]]+FREETYPE_MINOR[[:space:]]+([0-9]+)/\1/p' "${FREETYPE_INCLUDE_DIR}/freetype.h")"
 patch_version="$(sed -n -E 's/#[[:space:]]*define[[:space:]]+FREETYPE_PATCH[[:space:]]+([0-9]+)/\1/p' "${FREETYPE_INCLUDE_DIR}/freetype.h")"
 version="${major_version}.${minor_version}.${patch_version}"
 build=${AUTOBUILD_BUILD_ID:=0}
-echo "${version}.${build}" > "${stage}/VERSION.tmp"
-tr -d "\r\n" < "${stage}/VERSION.tmp" > "${stage}/VERSION.txt"
-rm "${stage}/VERSION.tmp"
+echo "${version}.${build}" > "${stage}/VERSION.txt"
 
 pushd "$FREETYPELIB_SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
