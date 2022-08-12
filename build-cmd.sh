@@ -17,7 +17,7 @@ fi
 #version due to issues...
 if [ $AUTOBUILD_PLATFORM == "linux64" ] || [ $AUTOBUILD_PLATFORM == "darwin64" ]
 then
-    FREETYPELIB_SOURCE_DIR="freetype-2.4.4"
+    FREETYPELIB_SOURCE_DIR="freetype"
 else
     FREETYPELIB_SOURCE_DIR="freetype-2.3.9"
 fi
