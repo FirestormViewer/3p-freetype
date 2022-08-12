@@ -9,10 +9,17 @@ set -e
 # complain about unset env variables
 set -u
 
-FREETYPELIB_SOURCE_DIR="freetype-2.3.9"
-
 if [ -z "$AUTOBUILD" ] ; then
     exit 1
+fi
+
+#Needed because Linux and Mac are using v2.4.4 and windows needs an earlier
+#version due to issues...
+if [ $AUTOBUILD_PLATFORM == "linux64" ] || [ $AUTOBUILD_PLATFORM == "darwin64" ]
+then
+    FREETYPELIB_SOURCE_DIR="freetype-2.4.4"
+else
+    FREETYPELIB_SOURCE_DIR="freetype-2.3.9"
 fi
 
 if [ "$OSTYPE" = "cygwin" ] ; then
