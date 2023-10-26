@@ -63,6 +63,9 @@ pushd "$FREETYPELIB_SOURCE_DIR"
                     # outputs will be found in the same places as before.
                     verdir="vc2013"
                     ;;
+                "170")
+                    verdir="vc2022"
+                    ;;
                 *)
                     echo "Unknown AUTOBUILD_VSVER = '$AUTOBUILD_VSVER'" 1>&2 ; exit 1
                     ;;

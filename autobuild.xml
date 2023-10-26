@@ -24,9 +24,11 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>bf306e38bf81c6095e0967bdef6a2445</string>
+              <string>dacc5f3fb307c4d1292ed1ffb1d595d83599062d</string>
+              <key>hash_algorithm</key>
+              <string>sha1</string>
               <key>url</key>
-              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/87759/805718/zlib_ng-2.0.5.563838-darwin64-563838.tar.bz2</string>
+              <string>https://github.com/secondlife/3p-zlib-ng/releases/download/v1.2.11.zlib-ng.32fd361/zlib_ng-1.2.11.zlib-ng.32fd361-darwin64-32fd361.tar.zst</string>
             </map>
             <key>name</key>
             <string>darwin64</string>
@@ -72,9 +74,11 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>bd103a9129e57f7ea35886bc7750f8a6</string>
+              <string>ccfca9451063e2d0e95baa73b1ad2054d3e38907</string>
+              <key>hash_algorithm</key>
+              <string>sha1</string>
               <key>url</key>
-              <string>https://automated-builds-secondlife-com.s3.amazonaws.com/ct2/87760/805729/zlib_ng-2.0.5.563838-windows64-563838.tar.bz2</string>
+              <string>https://github.com/secondlife/3p-zlib-ng/releases/download/v1.2.11.zlib-ng.32fd361/zlib_ng-1.2.11.zlib-ng.32fd361-windows64-32fd361.tar.zst</string>
             </map>
             <key>name</key>
             <string>windows64</string>
